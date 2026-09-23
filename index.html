@@ -46,6 +46,43 @@ footer{background:#06234d;color:#c7d9e9;text-align:center;padding:20px 24px;font
 .choice-hint{text-align:center;color:var(--muted);font-size:14px;margin-top:18px}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
+
+/* Nuevo recorrido de selección */
+.audience-step{margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}
+.audience-step h4{margin:0 0 4px;font-size:21px}
+.step-help{margin:0 0 16px!important;color:var(--muted)}
+.audience-options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.audience-option{border:1px solid var(--line);background:#fff;border-radius:15px;padding:15px;text-align:left;display:flex;gap:12px;align-items:flex-start;cursor:pointer;transition:.2s ease;font:inherit;color:inherit}
+.audience-option:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 8px 22px rgba(19,69,105,.09)}
+.audience-option.selected{border-color:var(--blue);background:#f4fbff;box-shadow:0 0 0 3px rgba(7,152,232,.11)}
+.audience-option strong{display:block;font-size:15px}
+.audience-option small{display:block;color:var(--muted);font-size:12px;line-height:1.4;margin-top:3px}
+.audience-icon{font-size:22px;line-height:1}
+.final-recommendation{display:none;margin-top:22px;padding:22px;border-radius:16px;background:#f7fbfe;border:1px solid #dbeef9;animation:fadeIn .25s ease}
+.final-recommendation.visible{display:block}
+.final-recommendation h4{font-size:21px;margin:0 0 7px}
+.final-recommendation p{margin:0 0 17px!important}
+.custom-form-cta{max-width:980px;margin:32px auto 0;padding:34px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,#fff 0%,#f7fbfe 100%);box-shadow:0 18px 50px rgba(19,69,105,.10);display:grid;grid-template-columns:72px 1fr auto;gap:24px;align-items:center}
+.custom-form-icon{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;font-size:30px;font-weight:900;box-shadow:0 10px 24px rgba(7,152,232,.22)}
+.custom-form-copy h3{margin:5px 0 9px;font-size:25px}
+.custom-form-copy p{margin:0;color:var(--muted);line-height:1.65}
+.custom-form-kicker{display:inline-block;font-size:11px;letter-spacing:1.2px;font-weight:900;color:var(--blue2)}
+.custom-form-points{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.custom-form-points span{padding:7px 10px;border-radius:999px;background:#eef8ff;color:#4d687e;font-size:12px;font-weight:800}
+.custom-form-button{white-space:nowrap;border:0;cursor:pointer}
+.form-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:22px}
+.form-modal.open{display:flex}
+.form-modal-backdrop{position:absolute;inset:0;background:rgba(13,35,52,.68);backdrop-filter:blur(4px)}
+.form-modal-dialog{position:relative;z-index:1;width:min(920px,100%);height:min(88vh,760px);background:#fff;border-radius:22px;box-shadow:0 25px 80px rgba(0,0,0,.25);overflow:hidden;animation:formModalIn .22s ease;display:flex;flex-direction:column}
+.form-modal-header{flex:0 0 auto;padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:#fff}
+.form-modal-header h3{margin:4px 0 0;font-size:22px}
+.form-modal-close{border:0;background:#f1f5f8;color:#4c6070;width:40px;height:40px;border-radius:50%;font-size:27px;line-height:1;cursor:pointer}
+.form-modal-body{flex:1;min-height:0;background:#fff}
+.form-modal-body iframe{width:100%;height:100%;border:0;display:block}
+body.modal-open{overflow:hidden}
+@keyframes formModalIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media (max-width:760px){.audience-options{grid-template-columns:1fr}.custom-form-cta{grid-template-columns:1fr;text-align:center;padding:26px 20px}.custom-form-icon{margin:0 auto}.custom-form-points{justify-content:center}.custom-form-button{width:100%}.form-modal{padding:10px}.form-modal-dialog{height:94vh;border-radius:17px}}
+
 </style>
 </head>
 <body>
@@ -68,7 +105,7 @@ footer{background:#06234d;color:#c7d9e9;text-align:center;padding:20px 24px;font
 <section class="section" id="soluciones">
   <div class="center">
     <h2>Soluciones que puedes conocer</h2>
-    <p class="lead">Selecciona la solución que te interesa y te mostraremos información relacionada con lo que estás buscando.</p>
+    <p class="lead">Selecciona una solución y cuéntanos para quién la estás buscando.</p>
   </div>
 
   <div class="grid">
@@ -94,186 +131,180 @@ footer{background:#06234d;color:#c7d9e9;text-align:center;padding:20px 24px;font
     <div class="selection-meta"><span class="selection-tag" id="solutionTag">Solución seleccionada</span></div>
     <h3 id="solutionTitle"></h3>
     <p id="solutionDescription"></p>
-    <ul id="solutionBenefits"></ul>
-    <a class="btn primary" href="#formulario" id="solutionButton">Quiero recibir información</a>
+
+    <div class="audience-step">
+      <h4>¿Para quién estás buscando esta solución?</h4>
+      <p class="step-help">Selecciona una opción para continuar.</p>
+      <div class="audience-options">
+        <button type="button" class="audience-option" data-audience="contador">
+          <span class="audience-icon">👤</span>
+          <span><strong>Contador</strong><small>Para gestionar clientes y procesos contables.</small></span>
+        </button>
+        <button type="button" class="audience-option" data-audience="despacho">
+          <span class="audience-icon">👥</span>
+          <span><strong>Despacho contable</strong><small>Para organizar la gestión de múltiples RFC.</small></span>
+        </button>
+        <button type="button" class="audience-option" data-audience="empresa">
+          <span class="audience-icon">🏢</span>
+          <span><strong>Empresa</strong><small>Para conocer alternativas según tus procesos.</small></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="final-recommendation" id="finalRecommendation" aria-live="polite">
+      <div class="selection-meta">
+        <span class="selection-tag" id="finalSolutionTag">Solución</span>
+        <span class="selection-tag" id="finalAudienceTag">Perfil</span>
+      </div>
+      <h4 id="finalTitle"></h4>
+      <p id="finalDescription"></p>
+      <button class="btn primary" type="button" id="finalInfoButton">Solicitar información</button>
+    </div>
   </div>
 </section>
 
-<section class="audience">
+<section class="audience audience-secondary">
   <div class="section">
     <div class="center">
-      <h2>¿Para quién es?</h2>
-      <p class="lead">Selecciona quién eres para adaptar la información a tu necesidad.</p>
-    </div>
-
-    <div class="audience-grid">
-      <div class="aud aud-choice audience-choice" tabindex="0" role="button" data-audience="contador" aria-pressed="false">
-        <h3>Contador independiente</h3>
-        <p>Para gestionar tus clientes y procesos con mayor organización.</p>
-      </div>
-      <div class="aud aud-choice audience-choice" tabindex="0" role="button" data-audience="despacho" aria-pressed="false">
-        <h3>Despacho contable</h3>
-        <p>Para centralizar y apoyar la gestión de múltiples RFC.</p>
-      </div>
-      <div class="aud aud-choice audience-choice" tabindex="0" role="button" data-audience="empresa" aria-pressed="false">
-        <h3>Empresa</h3>
-        <p>Para conocer alternativas de acuerdo con tus procesos administrativos y fiscales.</p>
-      </div>
-    </div>
-
-    <p class="choice-hint">Puedes elegir una solución, un tipo de cliente o ambas opciones.</p>
-
-    <div class="selection-panel" id="recommendationPanel" aria-live="polite">
-      <div class="selection-meta">
-        <span class="selection-tag" id="selectedSolutionTag">Solución</span>
-        <span class="selection-tag" id="selectedAudienceTag">Perfil</span>
-      </div>
-      <h3 id="recommendationTitle"></h3>
-      <p id="recommendationDescription"></p>
-      <a class="btn primary" href="#formulario" id="recommendationButton">Quiero recibir información</a>
+      <h2>¿Quieres conocer otras opciones?</h2>
+      <p class="lead">Puedes volver a seleccionar una solución arriba y elegir el perfil que mejor describa tu necesidad.</p>
     </div>
   </div>
 </section>
 
-<section class="section form-section" id="formulario"><div class="center"><h2>Solicita información</h2><p class="lead">Déjanos tus datos. Puedes solicitar información, una demostración o una cotización.</p></div>
-<div class="formbox"><iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfbpmUlWzy8Pn011srwyKLTjVO0tmpo0hEv1c67LVsYzhyZNQ/viewform?embedded=true" title="Formulario de solicitud de información"></iframe></div></section>
+<section class="section form-section" id="formulario">
+  <div class="center">
+    <h2>Solicita información</h2>
+    <p class="lead">Cuéntanos qué solución estás buscando y te contactaremos para orientarte.</p>
+  </div>
+  <div class="custom-form-cta">
+    <div class="custom-form-icon">✦</div>
+    <div class="custom-form-copy">
+      <span class="custom-form-kicker">ATENCIÓN PERSONALIZADA</span>
+      <h3>Recibe información sobre la solución que necesitas</h3>
+      <p>Completa tus datos y cuéntanos qué estás buscando. Puedes solicitar información, una demostración o una cotización.</p>
+      <div class="custom-form-points">
+        <span>✓ Información personalizada</span>
+        <span>✓ Demostración</span>
+        <span>✓ Cotización</span>
+      </div>
+    </div>
+    <button class="btn primary custom-form-button" type="button" id="openFormButton">Solicitar información</button>
+  </div>
+</section>
+
+<div class="form-modal" id="formModal" aria-hidden="true">
+  <div class="form-modal-backdrop" id="formModalBackdrop"></div>
+  <div class="form-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="formModalTitle">
+    <div class="form-modal-header">
+      <div>
+        <span class="custom-form-kicker">SOLICITUD DE INFORMACIÓN</span>
+        <h3 id="formModalTitle">Cuéntanos qué necesitas</h3>
+      </div>
+      <button class="form-modal-close" type="button" id="closeFormButton" aria-label="Cerrar">×</button>
+    </div>
+    <div class="form-modal-body">
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfbpmUlWzy8Pn011srwyKLTjVO0tmpo0hEv1c67LVsYzhyZNQ/viewform?embedded=true" title="Solicitud de información" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
 
 <section class="contact"><div class="contact-wrap"><div><h2>¿Prefieres hablar directamente?</h2><p>Escríbeme por WhatsApp y cuéntame qué solución estás buscando.</p></div><a class="btn primary" href="https://wa.me/573105644319?text=Hola%20Erick%2C%20quiero%20informaci%C3%B3n%20sobre%20las%20soluciones%20Siigo%20y%20Aspel." target="_blank" rel="noopener">💬 Escribir a Erick Cruz</a></div></section>
 </main>
 <footer>Erick Cruz · Asesoría comercial · Aspel Siigo · México</footer>
 
 <script>
-(function () {
-  const solutionData = {
-    fiscal: {
-      name: "Siigo Fiscal",
-      description: "Una opción orientada a facilitar la gestión fiscal y centralizar la información que necesitas para tus procesos.",
-      benefits: ["Gestión de información fiscal", "Consulta y control de CFDI", "Apoyo para organizar procesos fiscales"]
-    },
-    coi: {
-      name: "Aspel COI",
-      description: "Una solución enfocada en la gestión y control de la información contable.",
-      benefits: ["Organización de información contable", "Control de procesos contables", "Información para apoyar tu operación"]
-    },
-    noi: {
-      name: "Aspel NOI",
-      description: "Una opción para apoyar la administración de nómina y los procesos relacionados.",
-      benefits: ["Gestión de nómina", "Organización de procesos relacionados", "Información para apoyar la administración"]
-    },
-    facturacion: {
-      name: "Facturación",
-      description: "Opciones para gestionar tus procesos de facturación electrónica de acuerdo con tus necesidades.",
-      benefits: ["Gestión de facturación electrónica", "Organización del proceso de facturación", "Orientación según tus necesidades"]
-    }
+(function(){
+  const solutionData={
+    fiscal:{name:"Siigo Fiscal",description:"Una opción orientada a facilitar la gestión fiscal y centralizar la información que necesitas para tus procesos."},
+    coi:{name:"Aspel COI",description:"Una solución enfocada en la gestión y control de la información contable."},
+    noi:{name:"Aspel NOI",description:"Una opción para apoyar la administración de nómina y los procesos relacionados."},
+    facturacion:{name:"Facturación",description:"Opciones para gestionar tus procesos de facturación electrónica de acuerdo con tus necesidades."}
+  };
+  const audienceData={
+    contador:{name:"Contador",description:"para gestionar tus clientes y procesos con mayor organización."},
+    despacho:{name:"Despacho contable",description:"para organizar la gestión de múltiples RFC y procesos."},
+    empresa:{name:"Empresa",description:"para conocer alternativas de acuerdo con tus procesos administrativos y fiscales."}
   };
 
-  const audienceData = {
-    contador: "Contador independiente",
-    despacho: "Despacho contable",
-    empresa: "Empresa"
-  };
+  let selectedSolution=null;
+  let selectedAudience=null;
 
-  let selectedSolution = null;
-  let selectedAudience = null;
+  const solutionCards=document.querySelectorAll(".choice-card");
+  const solutionPanel=document.getElementById("solutionPanel");
+  const finalBox=document.getElementById("finalRecommendation");
 
-  const solutionCards = document.querySelectorAll(".choice-card");
-  const audienceCards = document.querySelectorAll(".audience-choice");
-  const solutionPanel = document.getElementById("solutionPanel");
-  const recommendationPanel = document.getElementById("recommendationPanel");
-
-  function renderSolution() {
-    if (!selectedSolution) {
-      solutionPanel.classList.remove("visible");
+  function updateFinal(){
+    if(!selectedSolution || !selectedAudience){
+      finalBox.classList.remove("visible");
       return;
     }
+    const s=solutionData[selectedSolution], a=audienceData[selectedAudience];
+    document.getElementById("finalSolutionTag").textContent=s.name;
+    document.getElementById("finalAudienceTag").textContent=a.name;
+    document.getElementById("finalTitle").textContent=s.name+" para "+a.name;
+    document.getElementById("finalDescription").textContent="Conoce información sobre "+s.name+" pensada "+a.description;
+    finalBox.classList.add("visible");
+  }
 
-    const data = solutionData[selectedSolution];
-    document.getElementById("solutionTag").textContent = data.name;
-    document.getElementById("solutionTitle").textContent = data.name;
-    document.getElementById("solutionDescription").textContent = data.description;
+  function selectSolution(card){
+    selectedSolution=card.dataset.solution;
+    selectedAudience=null;
 
-    const benefits = document.getElementById("solutionBenefits");
-    benefits.innerHTML = data.benefits.map(item => "<li>✓ " + item + "</li>").join("");
+    solutionCards.forEach(c=>{
+      const active=c===card;
+      c.classList.toggle("selected",active);
+      c.setAttribute("aria-pressed",active?"true":"false");
+    });
+    document.querySelectorAll(".audience-option").forEach(b=>b.classList.remove("selected"));
 
+    const data=solutionData[selectedSolution];
+    document.getElementById("solutionTag").textContent=data.name;
+    document.getElementById("solutionTitle").textContent=data.name;
+    document.getElementById("solutionDescription").textContent=data.description;
     solutionPanel.classList.add("visible");
+    updateFinal();
+    solutionPanel.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
 
-  function renderRecommendation() {
-    if (!selectedSolution && !selectedAudience) {
-      recommendationPanel.classList.remove("visible");
-      return;
-    }
-
-    const solution = selectedSolution ? solutionData[selectedSolution] : null;
-    const audience = selectedAudience ? audienceData[selectedAudience] : null;
-
-    document.getElementById("selectedSolutionTag").textContent = solution ? solution.name : "Solución por definir";
-    document.getElementById("selectedAudienceTag").textContent = audience || "Perfil por definir";
-
-    if (solution && audience) {
-      document.getElementById("recommendationTitle").textContent = solution.name + " + " + audience;
-      document.getElementById("recommendationDescription").textContent =
-        "La información se puede orientar a las necesidades de un " + audience.toLowerCase() +
-        " interesado en conocer " + solution.name + ". Solicita información y te orientamos sobre la opción correspondiente.";
-    } else if (solution) {
-      document.getElementById("recommendationTitle").textContent = solution.name;
-      document.getElementById("recommendationDescription").textContent =
-        "Has seleccionado " + solution.name + ". Puedes solicitar información para conocer esta solución y recibir orientación según tus necesidades.";
-    } else {
-      document.getElementById("recommendationTitle").textContent = "Información para " + audience;
-      document.getElementById("recommendationDescription").textContent =
-        "Podemos orientar la información de acuerdo con las necesidades de tu perfil como " + audience.toLowerCase() + ".";
-    }
-
-    recommendationPanel.classList.add("visible");
-  }
-
-  function selectSolution(card) {
-    const value = card.dataset.solution;
-    selectedSolution = selectedSolution === value ? null : value;
-
-    solutionCards.forEach(item => {
-      const active = item === card && selectedSolution === value;
-      item.classList.toggle("selected", active);
-      item.setAttribute("aria-pressed", active ? "true" : "false");
-    });
-
-    renderSolution();
-    renderRecommendation();
-  }
-
-  function selectAudience(card) {
-    const value = card.dataset.audience;
-    selectedAudience = selectedAudience === value ? null : value;
-
-    audienceCards.forEach(item => {
-      const active = item === card && selectedAudience === value;
-      item.classList.toggle("selected", active);
-      item.setAttribute("aria-pressed", active ? "true" : "false");
-    });
-
-    renderRecommendation();
-  }
-
-  solutionCards.forEach(card => {
-    card.addEventListener("click", () => selectSolution(card));
-    card.addEventListener("keydown", event => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        selectSolution(card);
-      }
+  solutionCards.forEach(card=>{
+    card.addEventListener("click",()=>selectSolution(card));
+    card.addEventListener("keydown",e=>{
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();selectSolution(card);}
     });
   });
 
-  audienceCards.forEach(card => {
-    card.addEventListener("click", () => selectAudience(card));
-    card.addEventListener("keydown", event => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        selectAudience(card);
-      }
+  document.querySelectorAll(".audience-option").forEach(button=>{
+    button.addEventListener("click",()=>{
+      if(!selectedSolution) return;
+      selectedAudience=button.dataset.audience;
+      document.querySelectorAll(".audience-option").forEach(b=>b.classList.toggle("selected",b===button));
+      updateFinal();
     });
   });
+
+  const modal=document.getElementById("formModal");
+  const openFormButton=document.getElementById("openFormButton");
+  const finalInfoButton=document.getElementById("finalInfoButton");
+  const closeFormButton=document.getElementById("closeFormButton");
+  const backdrop=document.getElementById("formModalBackdrop");
+
+  function openForm(){
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden","false");
+    document.body.classList.add("modal-open");
+    if(closeFormButton) closeFormButton.focus();
+  }
+  function closeForm(){
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden","true");
+    document.body.classList.remove("modal-open");
+  }
+
+  [openFormButton,finalInfoButton].forEach(btn=>{if(btn)btn.addEventListener("click",openForm)});
+  if(closeFormButton)closeFormButton.addEventListener("click",closeForm);
+  if(backdrop)backdrop.addEventListener("click",closeForm);
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&modal.classList.contains("open"))closeForm()});
 })();
 </script>
 
